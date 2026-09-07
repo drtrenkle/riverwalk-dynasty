@@ -21,12 +21,12 @@
   </div>
   <div class="hero-inner">
     <div class="hero-top">
-      <div class="wordmark">Riverwalk Dynasty</div>
+      <button type="button" class="wordmark-badge" id="wordmark-btn"><span class="wordmark">Riverwalk Dynasty</span></button>
       <button class="btn-login" id="login-open">Log in</button>
     </div>
     <div class="hero-copy">
-      <h1 class="hero-hook">Every pick. Every trade. No spreadsheet required.</h1>
-      <p class="hero-sub">The single source of truth for Riverwalk Dynasty — who's drafting when, who traded what, and who's stacked at QB again.</p>
+      <h1 class="hero-hook">Picks. Trades. Tracked.</h1>
+      <p class="hero-sub">Ten teams, one dynasty, zero arguments.</p>
     </div>
   </div>
 </header>
@@ -517,6 +517,11 @@ document.addEventListener('keydown', e => {
   if(e.key !== 'Escape') return;
   if(!loginOverlay.hidden) loginOverlay.hidden = true;
   if(!tradeOverlay.hidden) tradeOverlay.hidden = true;
+});
+
+document.getElementById('wordmark-btn').addEventListener('click', () => {
+  document.querySelector('.section-tabs button[data-view="tracker"]').click();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
 /* ============================================================
