@@ -273,6 +273,19 @@
     color:var(--ink-dim);
     border-top:1px solid var(--line);
   }
+  .roster-card details{border-top:1px solid var(--line);}
+  .roster-card summary{
+    padding:.6rem 1.1rem;
+    cursor:pointer;
+    font-size:.82rem;
+    color:var(--ink-dim);
+    list-style:none;
+  }
+  .roster-card summary::-webkit-details-marker{display:none;}
+  .roster-card summary:before{content:"+ "; color:var(--gold);}
+  .roster-card details[open] summary:before{content:"\2013 ";}
+  .roster-card details table{border-top:1px solid var(--line);}
+  .sync-note{color:var(--ink-dim); font-size:.85rem;}
 
   /* ---------- trade log ---------- */
   .trade-year-block{margin-bottom:1.8rem;}
@@ -365,10 +378,9 @@
   <section id="view-rosters" class="view">
     <div class="section-heading">
       <h2>Rosters</h2>
-      <p>2026 starting lineups</p>
+      <p id="sync-status" class="sync-note">Loading…</p>
     </div>
     <div class="roster-grid" id="roster-grid"></div>
-    <div class="admin-note">Showing each team's 8 starters for now. Full 40-man rosters (bench + IR) will populate here automatically once the ESPN sync is wired up — no more re-typing screenshots.</div>
   </section>
 
   <!-- ===================== TRADE LOG ===================== -->
@@ -433,7 +445,9 @@ const YEARS = {
   2030: { label:'2030', status:'Future', overrides:[] },
 };
 
-const ROSTERS = [
+// Fallback only — used if data/rosters.json hasn't been generated yet,
+// or the sync job fails. Once the ESPN sync runs, real data overrides this.
+const ROSTERS_FALLBACK = [
   { id:'taxi',     name:"Geoff's Taxi Squad",           owner:'Jason Keizer',   slotColor:'balkan',
     starters:[['QB','Kirk Cousins','LV'],['RB','Isiah Pacheco','DET'],['RB','Kareem Hunt','FA'],
       ['WR/TE','Troy Franklin','DEN'],['WR/TE','A.J. Brown','NE'],['WR/TE','Khalil Shakir','BUF'],
@@ -551,26 +565,55 @@ function renderTracker(){
 /* ============================================================
    RENDER: ROSTERS
    ============================================================ */
-function renderRosters(){
-  const grid = document.getElementById('roster-grid');
-  grid.innerHTML = ROSTERS.map(team => `
+function rowsHtml(entries){
+  return entries.map(e => `
+    <tr>
+      <td class="slot">${e.slot}</td>
+      <td class="player">${e.player}</td>
+      <td class="nfl">${e.nfl}</td>
+    </tr>`).join('');
+}
+
+function cardHtml(team){
+  const fallbackMatch = ROSTERS_FALLBACK.find(f => f.name === team.name);
+  const colorVar = fallbackMatch ? `var(--${fallbackMatch.slotColor})` : 'var(--line)';
+  const bench = team.bench || [];
+  const ir = team.ir || [];
+  return `
     <div class="roster-card">
-      <div class="bar" style="background:var(--${team.slotColor})"></div>
+      <div class="bar" style="background:${colorVar}"></div>
       <div class="head">
         <h3>${team.name}</h3>
         <div class="owner">${team.owner}</div>
       </div>
-      <table>
-        ${team.starters.map(([slot, player, nfl]) => `
-          <tr>
-            <td class="slot">${slot}</td>
-            <td class="player">${player}</td>
-            <td class="nfl">${nfl}</td>
-          </tr>`).join('')}
-      </table>
-      <div class="foot">Bench &amp; IR sync pending</div>
-    </div>
-  `).join('');
+      <table>${rowsHtml(team.starters)}</table>
+      ${bench.length ? `<details><summary>Bench (${bench.length})</summary><table>${rowsHtml(bench)}</table></details>` : ''}
+      ${ir.length ? `<details><summary>Injured reserve (${ir.length})</summary><table>${rowsHtml(ir)}</table></details>` : ''}
+    </div>`;
+}
+
+function renderRostersFrom(teams, statusText){
+  document.getElementById('roster-grid').innerHTML = teams.map(cardHtml).join('');
+  document.getElementById('sync-status').textContent = statusText;
+}
+
+async function renderRosters(){
+  const fallbackTeams = ROSTERS_FALLBACK.map(t => ({
+    name:t.name, owner:t.owner,
+    starters:t.starters.map(([slot,player,nfl]) => ({slot,player,nfl})),
+    bench:[], ir:[],
+  }));
+  renderRostersFrom(fallbackTeams, 'Showing saved starters — full rosters sync automatically once ESPN is connected.');
+
+  try{
+    const res = await fetch('./data/rosters.json', {cache:'no-store'});
+    if(!res.ok) throw new Error('no synced data yet');
+    const data = await res.json();
+    const when = new Date(data.generatedAt).toLocaleString('en-US', { dateStyle:'medium', timeStyle:'short' });
+    renderRostersFrom(data.teams, `Synced from ESPN · ${when}`);
+  }catch(err){
+    // fallback stays on screen — nothing to do
+  }
 }
 
 /* ============================================================
