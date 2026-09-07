@@ -45,12 +45,23 @@ async function fetchLeague(){
     headers: {
       Cookie: `espn_s2=${ESPN_S2}; SWID=${ESPN_SWID}`,
       Accept: 'application/json',
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
     },
   });
+
+  const text = await res.text();
+
   if (!res.ok) {
-    throw new Error(`ESPN request failed: ${res.status} ${res.statusText}`);
+    throw new Error(`ESPN request failed: ${res.status} ${res.statusText} — ${text.slice(0, 300)}`);
   }
-  return res.json();
+  if (!text) {
+    throw new Error('ESPN returned an empty response body. Usually means the espn_s2/SWID cookies are invalid, expired, or belong to an account without access to this league.');
+  }
+  try {
+    return JSON.parse(text);
+  } catch {
+    throw new Error(`ESPN's response wasn't valid JSON (status ${res.status}). First 300 chars: ${text.slice(0, 300)}`);
+  }
 }
 
 function ownerName(league, memberIds){
