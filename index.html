@@ -36,45 +36,71 @@
   *{box-sizing:border-box;}
   html{scroll-behavior:smooth;}
   body{
-    margin:0;
-    background:var(--bg);
-    color:var(--ink);
-    font-family:'Inter', sans-serif;
-    -webkit-font-smoothing:antialiased;
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:'Inter', sans-serif; -webkit-font-smoothing:antialiased;
   }
   a{color:inherit;}
   ::selection{background:var(--accent-soft); color:var(--navy);}
   :focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
-  @media (prefers-reduced-motion: reduce){ *{transition:none !important; animation:none !important;} }
+  @media (prefers-reduced-motion: reduce){ *{animation:none !important; transition:none !important;} }
   button{font-family:inherit;}
 
-  /* ---------- top bar ---------- */
-  .topbar{ background:var(--navy); }
-  .topbar-inner{
-    max-width:1180px; margin:0 auto; padding:1.3rem 1.5rem;
-    display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap;
-  }
-  .wordmark{
-    font-family:'Space Grotesk', sans-serif; font-weight:700;
-    font-size:1.5rem; color:#fff; letter-spacing:-0.01em;
-  }
+  /* ---------- hero ---------- */
+  .hero{ position:relative; overflow:hidden; background:var(--navy); padding:2.4rem 0 3.4rem; }
+  .hero-mesh{ position:absolute; inset:0; overflow:hidden; z-index:0; }
+  .hero-mesh .blob{ position:absolute; border-radius:50%; filter:blur(70px); opacity:.5; mix-blend-mode:screen; }
+  .blob.b1{ width:420px; height:420px; background:var(--accent); top:-160px; left:-90px; animation:drift1 24s ease-in-out infinite alternate; }
+  .blob.b2{ width:360px; height:360px; background:var(--gold); top:-120px; right:-70px; animation:drift2 28s ease-in-out infinite alternate; }
+  .blob.b3{ width:320px; height:320px; background:#5B7CFF; bottom:-180px; left:38%; animation:drift3 32s ease-in-out infinite alternate; }
+  @keyframes drift1{ from{transform:translate(0,0);} to{transform:translate(70px,40px);} }
+  @keyframes drift2{ from{transform:translate(0,0);} to{transform:translate(-55px,55px);} }
+  @keyframes drift3{ from{transform:translate(0,0);} to{transform:translate(45px,-35px);} }
+  .hero-inner{ position:relative; z-index:1; max-width:1180px; margin:0 auto; padding:0 1.5rem; }
+  .hero-top{ display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; margin-bottom:1.7rem; }
+  .wordmark{ font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:1.4rem; color:#fff; letter-spacing:-0.01em; }
   .btn-login{
     background:transparent; border:1.5px solid rgba(255,255,255,.4); color:#fff;
     padding:.55rem 1.15rem; border-radius:8px; font-weight:600; font-size:.88rem; cursor:pointer;
+    transition:transform .15s ease, background .15s ease, border-color .15s ease;
   }
-  .btn-login:hover{ border-color:#fff; background:rgba(255,255,255,.08); }
+  .btn-login:hover{ border-color:#fff; background:rgba(255,255,255,.08); transform:translateY(-1px); }
+  .btn-login:active{ transform:translateY(0) scale(.97); }
+  .hero-hook{
+    font-family:'Space Grotesk', sans-serif; color:#fff; font-weight:700;
+    font-size:clamp(1.7rem, 4vw, 2.5rem); max-width:20ch; margin:0 0 .6rem; letter-spacing:-0.01em; line-height:1.08;
+  }
+  .hero-sub{ color:rgba(255,255,255,.72); font-size:1rem; max-width:52ch; margin:0; line-height:1.55; }
+
+  /* team-color stripe */
+  .stripe{
+    height:4px;
+    background:linear-gradient(90deg, var(--balkan), var(--wish), var(--mick), var(--valhalla), var(--wilksbooth),
+      var(--winter), var(--imps), var(--milf), var(--thor), var(--keystone), var(--balkan));
+    background-size:200% 100%; animation:stripeShift 16s linear infinite;
+  }
+  @keyframes stripeShift{ from{background-position:0 0;} to{background-position:200% 0;} }
+
+  /* ---------- hero stats (overlap the seam) ---------- */
+  .hero-stats-wrap{ max-width:1180px; margin:-2.4rem auto 0; padding:0 1.5rem; position:relative; z-index:2; }
+  .hero-stats{ display:flex; gap:.9rem; flex-wrap:wrap; }
+  .stat-tile{
+    background:var(--surface); border:1px solid var(--line); border-left:3px solid var(--accent);
+    border-radius:10px; padding:.85rem 1.1rem; min-width:150px; flex:1 1 150px;
+    box-shadow:0 10px 26px rgba(14,23,48,.14);
+  }
+  .stat-tile .num{ font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:1.6rem; color:var(--navy); line-height:1; }
+  .stat-tile .lbl{ color:var(--ink-dim); font-size:.78rem; margin-top:.3rem; }
 
   /* ---------- page head / nav ---------- */
-  .page-head{ max-width:1180px; margin:0 auto; padding:1.7rem 1.5rem 0; }
-  .tagline{ color:var(--ink-dim); margin:0 0 .4rem; max-width:52ch; font-size:.98rem; }
-
-  nav.section-tabs{ display:flex; gap:1.6rem; margin-top:1.4rem; border-bottom:1px solid var(--line); }
+  .page-head{ max-width:1180px; margin:0 auto; padding:2rem 1.5rem 0; }
+  nav.section-tabs{ position:relative; display:flex; gap:1.6rem; border-bottom:1px solid var(--line); }
   nav.section-tabs button{
     background:none; border:none; color:var(--ink-dim); font-size:1rem; font-weight:600;
-    padding:.85rem .1rem 1rem; cursor:pointer; border-bottom:3px solid transparent; margin-bottom:-1px;
+    padding:.85rem .1rem 1rem; cursor:pointer; transition:color .15s ease;
   }
   nav.section-tabs button:hover{color:var(--ink);}
-  nav.section-tabs button.active{ color:var(--ink); border-bottom-color:var(--accent); }
+  nav.section-tabs button.active{ color:var(--ink); }
+  .tab-indicator{ position:absolute; bottom:-1px; height:3px; background:var(--accent); border-radius:2px; transition:left .25s ease, width .25s ease; }
 
   main{ max-width:1180px; margin:0 auto; padding:1.8rem 1.5rem 5rem; }
   .view{display:none; animation:rise .3s ease;}
@@ -86,8 +112,8 @@
     width:32px; height:32px; border-radius:50%; flex:none;
     display:inline-flex; align-items:center; justify-content:center;
     font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:.72rem; color:#fff;
+    box-shadow:0 2px 6px rgba(14,23,48,.18);
   }
-  .badge.sm{ width:22px; height:22px; font-size:.6rem; }
   .th-dot{ width:8px; height:8px; border-radius:50%; display:inline-block; margin-right:.4rem; }
 
   /* ---------- year strip ---------- */
@@ -95,39 +121,51 @@
   .year-strip button{
     font-family:'IBM Plex Mono', monospace; background:var(--surface); border:1px solid var(--line);
     color:var(--ink-dim); padding:.45rem .9rem; border-radius:8px; cursor:pointer; font-size:.9rem;
+    transition:transform .15s ease, box-shadow .15s ease;
   }
+  .year-strip button:hover{ transform:translateY(-1px); box-shadow:0 3px 8px rgba(14,23,48,.08); }
+  .year-strip button:active{ transform:translateY(0) scale(.96); }
   .year-strip button.active{ color:#fff; background:var(--navy); border-color:var(--navy); font-weight:600; }
   .year-strip button[data-empty="1"]{opacity:.55;}
 
-  .section-heading{
-    display:flex; align-items:baseline; justify-content:space-between; gap:1rem;
-    flex-wrap:wrap; margin-bottom:1rem;
-  }
+  .section-heading{ display:flex; align-items:baseline; justify-content:space-between; gap:1rem; flex-wrap:wrap; margin-bottom:1rem; }
   .section-heading h2{ font-family:'Space Grotesk', sans-serif; font-size:1.4rem; margin:0; color:var(--navy); }
   .section-heading p{ color:var(--ink-dim); font-size:.9rem; margin:0; }
+  .heading-row{ display:flex; align-items:center; gap:1rem; flex-wrap:wrap; }
+
+  .btn-outline{
+    background:var(--surface); border:1.5px solid var(--line); color:var(--ink);
+    padding:.5rem 1rem; border-radius:9px; font-weight:600; font-size:.86rem; cursor:pointer;
+    display:inline-flex; align-items:center; gap:.45rem; transition:transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+  }
+  .btn-outline:hover{ border-color:var(--accent); box-shadow:0 4px 12px rgba(14,23,48,.08); transform:translateY(-1px); }
+  .btn-outline:active{ transform:translateY(0) scale(.97); }
+  .btn-outline .ic{ display:inline-block; transition:transform .2s ease; }
+  .btn-outline:hover .ic{ transform:rotate(-12deg); }
 
   /* ---------- pick tracker grid ---------- */
-  .tracker-scroll{
-    overflow-x:auto; border:1px solid var(--line); border-radius:12px;
-    background:var(--surface); box-shadow:0 1px 3px rgba(14,23,48,.05);
-  }
+  .tracker-scroll{ overflow-x:auto; border:1px solid var(--line); border-radius:12px; background:var(--surface); box-shadow:0 1px 3px rgba(14,23,48,.05); }
   table.tracker{ border-collapse:collapse; width:100%; min-width:1080px; }
-  table.tracker th, table.tracker td{
-    padding:.6rem .65rem; text-align:left; vertical-align:top; border-bottom:1px solid var(--line);
-  }
+  table.tracker th, table.tracker td{ padding:.6rem .65rem; text-align:left; vertical-align:top; border-bottom:1px solid var(--line); }
   table.tracker thead th{
     position:sticky; top:0; background:var(--surface-2); font-size:.78rem; font-weight:700;
-    color:var(--ink-dim); z-index:2; border-bottom:1px solid var(--line);
+    color:var(--ink-dim); z-index:2; border-bottom:1px solid var(--line); cursor:pointer;
+    transition:background .15s ease, color .15s ease;
   }
-  table.tracker thead th:first-child{left:0; z-index:3;}
+  table.tracker thead th:hover{ color:var(--ink); }
+  table.tracker thead th:first-child{left:0; z-index:3; cursor:default;}
+  table.tracker thead th:first-child:hover{ color:var(--ink-dim); }
   table.tracker td:first-child, table.tracker th:first-child{
     position:sticky; left:0; background:var(--surface-2);
     font-family:'IBM Plex Mono', monospace; font-size:.85rem; color:var(--ink); white-space:nowrap;
   }
   table.tracker tbody tr:last-child td{border-bottom:none;}
+  table.tracker td.col-hl, table.tracker th.col-hl{ background:var(--accent-soft); }
+  table.tracker td.col-dim, table.tracker th.col-dim{ opacity:.32; }
+  .tracker-hint{ font-size:.78rem; color:var(--ink-dim); margin:.5rem 0 0; }
 
   .pip-stack{display:flex; flex-direction:column; gap:.3rem;}
-  .pip{ display:inline-block; padding:.22rem .55rem; border-radius:999px; font-size:.76rem; font-weight:600; white-space:nowrap; }
+  .pip{ display:inline-block; padding:.22rem .55rem; border-radius:999px; font-size:.76rem; font-weight:600; white-space:nowrap; transition:transform .15s ease; }
   .pip.own{opacity:.82;}
   .pip.acquired{box-shadow: inset 0 0 0 1.5px rgba(14,23,48,.35);}
   .empty-cell{color:var(--line); font-size:.8rem;}
@@ -138,8 +176,9 @@
   .roster-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:1.1rem; }
   .roster-card{
     background:var(--surface); border:1px solid var(--line); border-radius:14px; overflow:hidden;
-    box-shadow:0 1px 3px rgba(14,23,48,.05);
+    box-shadow:0 1px 3px rgba(14,23,48,.05); transition:transform .18s ease, box-shadow .18s ease;
   }
+  .roster-card:hover{ transform:translateY(-3px); box-shadow:0 14px 28px rgba(14,23,48,.12); }
   .roster-card .bar{height:5px;}
   .roster-card .head{ padding:1rem 1.1rem .9rem; border-bottom:1px solid var(--line); display:flex; gap:.7rem; align-items:center; }
   .roster-card .head-text h3{ margin:0 0 .1rem; font-size:1rem; font-weight:700; }
@@ -161,37 +200,26 @@
   /* ---------- trade log ---------- */
   .trade-year-block{margin-bottom:1.8rem;}
   .trade-year-block h3{ font-family:'IBM Plex Mono', monospace; font-weight:500; color:var(--navy); font-size:1rem; margin:0 0 .6rem; }
-  .trade-row{
-    display:flex; align-items:center; gap:.7rem; padding:.6rem 0; border-bottom:1px solid var(--line);
-    flex-wrap:wrap; font-size:.92rem;
-  }
+  .timeline{ position:relative; padding-left:1.5rem; }
+  .timeline::before{ content:""; position:absolute; left:5px; top:6px; bottom:6px; width:2px; background:var(--line); }
+  .trade-row{ position:relative; display:flex; align-items:center; gap:.7rem; padding:.6rem 0; border-bottom:1px solid var(--line); flex-wrap:wrap; font-size:.92rem; }
+  .trade-row::before{ content:""; position:absolute; left:-1.5rem; top:1.05rem; width:9px; height:9px; border-radius:50%; background:var(--accent); box-shadow:0 0 0 3px var(--accent-soft); }
   .trade-row:last-child{border-bottom:none;}
   .trade-round{ font-family:'IBM Plex Mono', monospace; color:var(--ink-dim); font-size:.78rem; width:4.5rem; }
   .arrow{color:var(--ink-dim);}
   .empty-note{ color:var(--ink-dim); font-size:.9rem; padding:1.2rem 0; }
-  .admin-note{
-    margin-top:2rem; padding:1rem 1.1rem; border:1px dashed var(--line); border-radius:10px;
-    color:var(--ink-dim); font-size:.85rem;
-  }
+  .admin-note{ margin-top:2rem; padding:1rem 1.1rem; border:1px dashed var(--line); border-radius:10px; color:var(--ink-dim); font-size:.85rem; }
 
   footer{ max-width:1180px; margin:0 auto; padding:0 1.5rem 3rem; color:var(--ink-dim); font-size:.8rem; }
 
-  /* ---------- login modal ---------- */
-  .modal-overlay{
-    position:fixed; inset:0; background:rgba(14,23,48,.55); display:flex;
-    align-items:center; justify-content:center; padding:1rem; z-index:50;
-  }
+  /* ---------- modals (shared) ---------- */
+  .modal-overlay{ position:fixed; inset:0; background:rgba(14,23,48,.55); display:flex; align-items:center; justify-content:center; padding:1rem; z-index:50; }
   .modal-overlay[hidden]{display:none;}
-  .modal{
-    background:var(--surface); border-radius:16px; padding:1.9rem; width:100%; max-width:380px;
-    position:relative; box-shadow:0 24px 60px rgba(14,23,48,.35);
-  }
+  .modal{ background:var(--surface); border-radius:16px; padding:1.9rem; width:100%; max-width:400px; position:relative; box-shadow:0 24px 60px rgba(14,23,48,.35); animation:pop .2s ease; }
+  @keyframes pop{ from{opacity:0; transform:translateY(8px) scale(.98);} to{opacity:1; transform:translateY(0) scale(1);} }
   .modal h3{ font-family:'Space Grotesk', sans-serif; margin:0 0 .4rem; font-size:1.2rem; color:var(--navy); }
   .modal-sub{ color:var(--ink-dim); font-size:.88rem; margin:0 0 1.2rem; line-height:1.45; }
-  .modal-close{
-    position:absolute; top:.9rem; right:.9rem; background:none; border:none;
-    font-size:1.4rem; color:var(--ink-dim); cursor:pointer; line-height:1;
-  }
+  .modal-close{ position:absolute; top:.9rem; right:.9rem; background:none; border:none; font-size:1.4rem; color:var(--ink-dim); cursor:pointer; line-height:1; }
   .field-label{ display:block; font-size:.78rem; font-weight:600; color:var(--ink-dim); margin:0 0 .35rem; }
   .field-input{
     width:100%; padding:.65rem .8rem; border:1.5px solid var(--line); border-radius:9px;
@@ -201,28 +229,49 @@
   .code-input{ letter-spacing:.5em; font-family:'IBM Plex Mono', monospace; font-size:1.15rem; text-align:center; }
   .btn-primary{
     width:100%; padding:.75rem; background:var(--accent); color:#fff; border:none; border-radius:9px;
-    font-weight:600; font-size:.94rem; cursor:pointer;
+    font-weight:600; font-size:.94rem; cursor:pointer; transition:background .15s ease, transform .15s ease;
   }
   .btn-primary:hover{ background:var(--navy-2); }
+  .btn-primary:active{ transform:scale(.98); }
   .btn-text{ width:100%; margin-top:.6rem; background:none; border:none; color:var(--accent); font-size:.85rem; cursor:pointer; font-weight:600; padding:.4rem; }
   .demo-note{ background:var(--accent-soft); color:var(--navy); font-size:.8rem; padding:.65rem .75rem; border-radius:9px; margin:-0.4rem 0 1rem; line-height:1.4; }
+
+  /* ---------- toast ---------- */
+  .toast{
+    position:fixed; bottom:1.4rem; right:1.4rem; background:var(--navy); color:#fff;
+    padding:.8rem 1.1rem; border-radius:10px; font-size:.85rem; box-shadow:0 10px 24px rgba(14,23,48,.3);
+    transform:translateY(12px); opacity:0; transition:transform .25s ease, opacity .25s ease; z-index:60; max-width:300px;
+  }
+  .toast.show{ transform:translateY(0); opacity:1; }
 </style>
 </head>
 <body>
 
-<header class="topbar">
-  <div class="topbar-inner">
-    <div class="wordmark">Riverwalk Dynasty</div>
-    <button class="btn-login" id="login-open">Log in</button>
+<header class="hero">
+  <div class="hero-mesh" aria-hidden="true">
+    <span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span>
+  </div>
+  <div class="hero-inner">
+    <div class="hero-top">
+      <div class="wordmark">Riverwalk Dynasty</div>
+      <button class="btn-login" id="login-open">Log in</button>
+    </div>
+    <h1 class="hero-hook">Every pick. Every trade. No spreadsheet required.</h1>
+    <p class="hero-sub">The single source of truth for Riverwalk Dynasty — who's drafting when, who traded what, and who's stacked at QB again.</p>
   </div>
 </header>
+<div class="stripe"></div>
+
+<div class="hero-stats-wrap">
+  <div class="hero-stats" id="hero-stats"></div>
+</div>
 
 <div class="page-head">
-  <p class="tagline">Who owns which pick, who's on which roster, and what's been traded to get here — all in one place instead of a shared sheet.</p>
-  <nav class="section-tabs">
+  <nav class="section-tabs" id="section-tabs">
     <button data-view="tracker" class="active">Pick Tracker</button>
     <button data-view="rosters">Rosters</button>
     <button data-view="trades">Trade Log</button>
+    <span class="tab-indicator" id="tab-indicator"></span>
   </nav>
 </div>
 
@@ -232,16 +281,20 @@
   <section id="view-tracker" class="view active">
     <div class="year-strip" id="year-strip"></div>
     <div class="section-heading">
-      <h2 id="tracker-heading">Draft Picks</h2>
-      <p id="tracker-sub"></p>
+      <div class="heading-row">
+        <h2 id="tracker-heading">Draft Picks</h2>
+      </div>
+      <button class="btn-outline" id="log-trade-open"><span class="ic">🏈</span> Log a trade</button>
     </div>
+    <p id="tracker-sub" style="color:var(--ink-dim); font-size:.9rem; margin:-0.6rem 0 1rem;"></p>
     <div class="tracker-scroll">
       <table class="tracker">
         <thead><tr id="tracker-head"></tr></thead>
         <tbody id="tracker-body"></tbody>
       </table>
     </div>
-    <p class="legend">Solid pill = the team's own original pick for that round. Outlined pill = a pick acquired in a trade, labeled with who it came from.</p>
+    <p class="legend">Solid pill = a team's own original pick. Outlined pill = a pick acquired in a trade, labeled with who it came from.</p>
+    <p class="tracker-hint">Tip: click a team's column header to trace everywhere their picks ended up.</p>
   </section>
 
   <!-- ===================== ROSTERS ===================== -->
@@ -257,10 +310,10 @@
   <section id="view-trades" class="view">
     <div class="section-heading">
       <h2>Trade Log</h2>
-      <p>Every pick trade on record, most recent season first</p>
+      <p>The receipts — every pick trade, newest first</p>
     </div>
     <div id="trade-log"></div>
-    <div class="admin-note">This log is built straight from the pick tracker above. Once trades start happening in-season, they'll get logged here with a date and both sides of the deal.</div>
+    <div class="admin-note">Built straight from the pick tracker. Log a trade from the Pick Tracker tab and it lands here automatically.</div>
   </section>
 
 </main>
@@ -271,7 +324,6 @@
 <div class="modal-overlay" id="login-overlay" hidden>
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="login-title">
     <button class="modal-close" id="login-close" aria-label="Close">&times;</button>
-
     <div id="login-step-request">
       <h3 id="login-title">Sign in to your team</h3>
       <p class="modal-sub">Pick your team and we'll send a one-time code to the email on file.</p>
@@ -281,7 +333,6 @@
       <input id="login-email" class="field-input" type="email" placeholder="you@example.com">
       <button class="btn-primary" id="login-send">Send code</button>
     </div>
-
     <div id="login-step-verify" hidden>
       <h3>Check your email</h3>
       <p class="modal-sub">Enter the 6-digit code we sent to <span id="login-email-echo"></span>.</p>
@@ -290,7 +341,6 @@
       <button class="btn-primary" id="login-verify">Verify</button>
       <button class="btn-text" id="login-resend">Resend code</button>
     </div>
-
     <div id="login-step-done" hidden>
       <h3>You're in</h3>
       <p class="modal-sub" id="login-welcome"></p>
@@ -299,15 +349,26 @@
   </div>
 </div>
 
+<!-- ===================== LOG A TRADE MODAL ===================== -->
+<div class="modal-overlay" id="trade-overlay" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="trade-title">
+    <button class="modal-close" id="trade-close" aria-label="Close">&times;</button>
+    <h3 id="trade-title">Log a pick trade</h3>
+    <p class="modal-sub" id="trade-sub">Move a team's pick to whoever they traded it to. Updates the board instantly — preview only, resets on reload until this is wired up to save for real.</p>
+    <label class="field-label" for="trade-round">Round</label>
+    <select id="trade-round" class="field-input"></select>
+    <label class="field-label" for="trade-from">Whose pick is moving</label>
+    <select id="trade-from" class="field-input"></select>
+    <label class="field-label" for="trade-to">Goes to</label>
+    <select id="trade-to" class="field-input"></select>
+    <button class="btn-primary" id="trade-add">Add trade</button>
+  </div>
+</div>
+
 <script>
 /* ============================================================
    DATA
-   Franchise slot names below match the league's pick-trade
-   ledger. Current-season ESPN team names (used in Rosters)
-   don't all map 1:1 to these slot names yet — confirm the
-   owner↔slot pairing to merge the two views later.
    ============================================================ */
-
 const TEAMS = [
   { id:'balkan',     name:'Balkan Bastard',        short:'Balkan'    },
   { id:'wish',       name:'Wishbone Productions',  short:'Wish'      },
@@ -346,8 +407,6 @@ const YEARS = {
   2030: { label:'2030', status:'Future', overrides:[] },
 };
 
-// Fallback only — used until data/rosters.json exists (ESPN sync).
-// Starters cross-checked against direct ESPN team-page screenshots.
 const ROSTERS_FALLBACK = [
   { id:'taxi',     name:"Geoff's Taxi Squad",           owner:'Jason Keizer',    slotColor:'balkan',
     starters:[['QB','Kirk Cousins','LV'],['RB','Isiah Pacheco','DET'],['RB','Kareem Hunt','FA'],
@@ -410,15 +469,48 @@ function buildRoundData(overrides){
   overrides.forEach(o => removedOwn.add(o.round + '-' + o.from));
   ROUNDS.forEach(r => {
     TEAMS.forEach(t => {
-      if(!removedOwn.has(r + '-' + t.id)){
-        data[r][t.id].push({ label:t.short, color:t.id, kind:'own' });
-      }
+      if(!removedOwn.has(r + '-' + t.id)) data[r][t.id].push({ label:t.short, color:t.id, kind:'own' });
     });
   });
   overrides.forEach(o => {
     data[o.round][o.to].push({ label: teamById(o.from).short, color:o.from, kind:'acquired' });
   });
   return data;
+}
+
+function showToast(msg){
+  let t = document.getElementById('toast');
+  if(!t){ t = document.createElement('div'); t.id='toast'; t.className='toast'; t.setAttribute('aria-live','polite'); document.body.appendChild(t); }
+  t.textContent = msg;
+  requestAnimationFrame(() => t.classList.add('show'));
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+/* ============================================================
+   RENDER: HERO STATS
+   ============================================================ */
+function countUp(el, target){
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){ el.textContent = target; return; }
+  const start = performance.now(), dur = 650;
+  function tick(now){
+    const p = Math.min(1, (now - start) / dur);
+    el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3)));
+    if(p < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+function renderHeroStats(){
+  const stats = [
+    { num: TEAMS.length, lbl: 'Teams in the league' },
+    { num: YEARS[2026].overrides.length, lbl: '2026 trades on record' },
+    { num: ROUNDS.length, lbl: 'Rounds per draft class' },
+    { num: Object.keys(YEARS).length, lbl: 'Seasons tracked' },
+  ];
+  const wrap = document.getElementById('hero-stats');
+  wrap.innerHTML = stats.map((s, i) => `<div class="stat-tile"><div class="num" id="stat-${i}">0</div><div class="lbl">${s.lbl}</div></div>`).join('');
+  stats.forEach((s, i) => countUp(document.getElementById('stat-' + i), s.num));
 }
 
 /* ============================================================
@@ -446,51 +538,55 @@ function renderTracker(){
     year.overrides.length ? year.overrides.length + ' trades on record for this class' : 'No trades yet — every team holds its own picks';
 
   const head = document.getElementById('tracker-head');
-  head.innerHTML = '<th>Round</th>' + TEAMS.map(t =>
-    `<th><span class="th-dot" style="background:var(--${t.id})"></span>${t.short}</th>`
-  ).join('');
+  head.innerHTML = '<th>Round</th>' + TEAMS.map((t, i) =>
+    `<th data-col="${i}"><span class="th-dot" style="background:var(--${t.id})"></span>${t.short}</th>`).join('');
 
   const data = buildRoundData(year.overrides);
   const body = document.getElementById('tracker-body');
   body.innerHTML = ROUNDS.map(r => {
-    const cells = TEAMS.map(t => {
+    const cells = TEAMS.map((t, i) => {
       const pips = data[r][t.id];
-      if(!pips.length) return '<td><span class="empty-cell">—</span></td>';
-      const inner = pips.map(p =>
+      const inner = pips.length ? pips.map(p =>
         `<span class="pip ${p.kind}" style="background:var(--${p.color});color:var(--${p.color}-ink)">${p.label}</span>`
-      ).join('');
-      return `<td><div class="pip-stack">${inner}</div></td>`;
+      ).join('') : '<span class="empty-cell">—</span>';
+      return `<td data-col="${i}"><div class="pip-stack">${inner}</div></td>`;
     }).join('');
     return `<tr><td>Round ${r}</td>${cells}</tr>`;
   }).join('');
+
+  let activeCol = null;
+  head.querySelectorAll('th[data-col]').forEach(th => {
+    th.addEventListener('click', () => {
+      const col = th.dataset.col;
+      activeCol = activeCol === col ? null : col;
+      document.querySelectorAll('#tracker-head th, #tracker-body td').forEach(cell => {
+        cell.classList.remove('col-hl', 'col-dim');
+        if(activeCol === null || !cell.dataset.col) return;
+        cell.classList.add(cell.dataset.col === activeCol ? 'col-hl' : 'col-dim');
+      });
+    });
+  });
 }
 
 /* ============================================================
    RENDER: ROSTERS
    ============================================================ */
 function rowsHtml(entries){
-  return entries.map(e => `
-    <tr>
-      <td class="slot">${e.slot}</td>
-      <td class="player">${e.player}</td>
-      <td class="nfl">${e.nfl}</td>
-    </tr>`).join('');
+  return entries.map(e => `<tr><td class="slot">${e.slot}</td><td class="player">${e.player}</td><td class="nfl">${e.nfl}</td></tr>`).join('');
 }
 
 function cardHtml(team){
   const fallbackMatch = ROSTERS_FALLBACK.find(f => f.name === team.name);
   const colorVar = fallbackMatch ? `var(--${fallbackMatch.slotColor})` : 'var(--navy)';
+  const headWash = `linear-gradient(135deg, color-mix(in srgb, ${colorVar} 14%, white), white 75%)`;
   const bench = team.bench || [];
   const ir = team.ir || [];
   return `
     <div class="roster-card">
       <div class="bar" style="background:${colorVar}"></div>
-      <div class="head">
+      <div class="head" style="background:${headWash}">
         <span class="badge" style="background:${colorVar}">${initialsFromName(team.name)}</span>
-        <div class="head-text">
-          <h3>${team.name}</h3>
-          <div class="owner">${team.owner}</div>
-        </div>
+        <div class="head-text"><h3>${team.name}</h3><div class="owner">${team.owner}</div></div>
       </div>
       <table>${rowsHtml(team.starters)}</table>
       ${bench.length ? `<details><summary>Bench (${bench.length})</summary><table>${rowsHtml(bench)}</table></details>` : ''}
@@ -505,9 +601,7 @@ function renderRostersFrom(teams, statusText){
 
 async function renderRosters(){
   const fallbackTeams = ROSTERS_FALLBACK.map(t => ({
-    name:t.name, owner:t.owner,
-    starters:t.starters.map(([slot,player,nfl]) => ({slot,player,nfl})),
-    bench:[], ir:[],
+    name:t.name, owner:t.owner, starters:t.starters.map(([slot,player,nfl]) => ({slot,player,nfl})), bench:[], ir:[],
   }));
   renderRostersFrom(fallbackTeams, 'Showing saved starters — full rosters sync automatically once ESPN is connected.');
   try{
@@ -528,64 +622,65 @@ function renderTrades(){
   wrap.innerHTML = years.map(y => {
     const overrides = YEARS[y].overrides;
     const rows = overrides.length
-      ? overrides.map(o => `
+      ? `<div class="timeline">${overrides.map(o => `
           <div class="trade-row">
             <span class="trade-round">Round ${o.round}</span>
             <span class="pip own" style="background:var(--${o.from});color:var(--${o.from}-ink)">${teamById(o.from).short}</span>
             <span class="arrow">pick →</span>
             <span class="pip acquired" style="background:var(--${o.to});color:var(--${o.to}-ink)">${teamById(o.to).short}</span>
-          </div>`).join('')
+          </div>`).join('')}</div>`
       : `<div class="empty-note">No trades recorded for ${y}.</div>`;
     return `<div class="trade-year-block"><h3>${y}</h3>${rows}</div>`;
   }).join('');
 }
 
 /* ============================================================
-   NAV
+   NAV — tabs with sliding indicator
    ============================================================ */
-document.querySelectorAll('.section-tabs button').forEach(btn => {
+function moveIndicator(btn){
+  const nav = document.getElementById('section-tabs');
+  const ind = document.getElementById('tab-indicator');
+  const navRect = nav.getBoundingClientRect(), r = btn.getBoundingClientRect();
+  ind.style.left = (r.left - navRect.left) + 'px';
+  ind.style.width = r.width + 'px';
+}
+document.querySelectorAll('.section-tabs button[data-view]').forEach(btn => {
   btn.addEventListener('click', () => {
-    document.querySelectorAll('.section-tabs button').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.section-tabs button[data-view]').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     document.getElementById('view-' + btn.dataset.view).classList.add('active');
+    moveIndicator(btn);
   });
+});
+window.addEventListener('resize', () => {
+  const active = document.querySelector('.section-tabs button.active');
+  if(active) moveIndicator(active);
 });
 
 /* ============================================================
    LOGIN MODAL (front-end preview — no backend wired up yet)
    ============================================================ */
 const loginTeamSelect = document.getElementById('login-team');
-loginTeamSelect.innerHTML = '<option value="">Choose your team…</option>' +
-  ROSTERS_FALLBACK.map(t => `<option>${t.name}</option>`).join('');
-
-const overlay = document.getElementById('login-overlay');
-function showStep(step){
+loginTeamSelect.innerHTML = '<option value="">Choose your team…</option>' + ROSTERS_FALLBACK.map(t => `<option>${t.name}</option>`).join('');
+const loginOverlay = document.getElementById('login-overlay');
+function showLoginStep(step){
   document.getElementById('login-step-request').hidden = step !== 'request';
   document.getElementById('login-step-verify').hidden = step !== 'verify';
   document.getElementById('login-step-done').hidden = step !== 'done';
 }
 document.getElementById('login-open').addEventListener('click', () => {
-  overlay.hidden = false;
-  showStep('request');
-  loginTeamSelect.focus();
+  loginOverlay.hidden = false; showLoginStep('request'); loginTeamSelect.focus();
 });
-function closeModal(){ overlay.hidden = true; }
-document.getElementById('login-close').addEventListener('click', closeModal);
-overlay.addEventListener('click', e => { if(e.target === overlay) closeModal(); });
-document.addEventListener('keydown', e => { if(e.key === 'Escape' && !overlay.hidden) closeModal(); });
-
-function newDemoCode(){
-  return String(Math.floor(100000 + Math.random()*900000));
-}
+document.getElementById('login-close').addEventListener('click', () => loginOverlay.hidden = true);
+loginOverlay.addEventListener('click', e => { if(e.target === loginOverlay) loginOverlay.hidden = true; });
+function newDemoCode(){ return String(Math.floor(100000 + Math.random()*900000)); }
 document.getElementById('login-send').addEventListener('click', () => {
-  const team = loginTeamSelect.value;
-  const email = document.getElementById('login-email').value;
+  const team = loginTeamSelect.value, email = document.getElementById('login-email').value;
   if(!team || !email) return;
   document.getElementById('login-email-echo').textContent = email;
   document.getElementById('login-demo-code').textContent = newDemoCode();
-  showStep('verify');
-  document.getElementById('login-code').focus();
+  showLoginStep('verify'); document.getElementById('login-code').focus();
 });
 document.getElementById('login-resend').addEventListener('click', () => {
   document.getElementById('login-demo-code').textContent = newDemoCode();
@@ -593,16 +688,56 @@ document.getElementById('login-resend').addEventListener('click', () => {
 document.getElementById('login-verify').addEventListener('click', () => {
   const code = document.getElementById('login-code').value.trim();
   if(code.length !== 6) return;
-  const team = loginTeamSelect.value;
-  document.getElementById('login-welcome').textContent = `Welcome back, ${team}. (Preview mode — this won't persist yet.)`;
-  showStep('done');
+  document.getElementById('login-welcome').textContent = `Welcome back, ${loginTeamSelect.value}. (Preview mode — this won't persist yet.)`;
+  showLoginStep('done');
 });
-document.getElementById('login-finish').addEventListener('click', closeModal);
+document.getElementById('login-finish').addEventListener('click', () => loginOverlay.hidden = true);
 
+/* ============================================================
+   LOG A TRADE MODAL (client-side preview, resets on reload)
+   ============================================================ */
+const tradeOverlay = document.getElementById('trade-overlay');
+const tradeRoundSel = document.getElementById('trade-round');
+const tradeFromSel = document.getElementById('trade-from');
+const tradeToSel = document.getElementById('trade-to');
+tradeRoundSel.innerHTML = ROUNDS.map(r => `<option value="${r}">Round ${r}</option>`).join('');
+tradeFromSel.innerHTML = TEAMS.map(t => `<option value="${t.id}">${t.short}</option>`).join('');
+tradeToSel.innerHTML = TEAMS.map(t => `<option value="${t.id}">${t.short}</option>`).join('');
+
+document.getElementById('log-trade-open').addEventListener('click', () => {
+  document.getElementById('trade-sub').textContent =
+    `Adding a trade to the ${currentYear} draft class. Updates the board instantly — preview only, resets on reload until this is wired up to save for real.`;
+  tradeOverlay.hidden = false;
+});
+document.getElementById('trade-close').addEventListener('click', () => tradeOverlay.hidden = true);
+tradeOverlay.addEventListener('click', e => { if(e.target === tradeOverlay) tradeOverlay.hidden = true; });
+
+document.getElementById('trade-add').addEventListener('click', () => {
+  const round = Number(tradeRoundSel.value);
+  const from = tradeFromSel.value;
+  const to = tradeToSel.value;
+  if(from === to){ showToast("Can't trade a pick to the same team."); return; }
+  YEARS[currentYear].overrides.push({ round, from, to });
+  renderTracker(); renderTrades(); renderHeroStats();
+  tradeOverlay.hidden = true;
+  showToast(`Added: ${teamById(from).short}'s Round ${round} pick → ${teamById(to).short} (preview only)`);
+});
+
+document.addEventListener('keydown', e => {
+  if(e.key !== 'Escape') return;
+  if(!loginOverlay.hidden) loginOverlay.hidden = true;
+  if(!tradeOverlay.hidden) tradeOverlay.hidden = true;
+});
+
+/* ============================================================
+   INIT
+   ============================================================ */
+renderHeroStats();
 renderYearStrip();
 renderTracker();
 renderRosters();
 renderTrades();
+moveIndicator(document.querySelector('.section-tabs button.active'));
 </script>
 
 </body>
