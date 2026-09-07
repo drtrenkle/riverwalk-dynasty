@@ -45,8 +45,18 @@
   @media (prefers-reduced-motion: reduce){ *{animation:none !important; transition:none !important;} }
   button{font-family:inherit;}
 
+  /* ---------- ambient page mesh (shows through the light space between cards) ---------- */
+  .page-mesh{ position:fixed; inset:0; overflow:hidden; pointer-events:none; }
+  .pblob{ position:absolute; border-radius:50%; filter:blur(90px); opacity:.13; }
+  .pblob.p1{ width:460px; height:460px; background:var(--accent); top:22%; left:-140px; animation:pdrift1 42s ease-in-out infinite alternate; }
+  .pblob.p2{ width:400px; height:400px; background:var(--gold); bottom:8%; right:-110px; animation:pdrift2 48s ease-in-out infinite alternate; }
+  .pblob.p3{ width:360px; height:360px; background:var(--wilksbooth); top:58%; left:46%; animation:pdrift3 52s ease-in-out infinite alternate; }
+  @keyframes pdrift1{ from{transform:translate(0,0);} to{transform:translate(90px,60px);} }
+  @keyframes pdrift2{ from{transform:translate(0,0);} to{transform:translate(-70px,-55px);} }
+  @keyframes pdrift3{ from{transform:translate(0,0);} to{transform:translate(65px,-80px);} }
+
   /* ---------- hero ---------- */
-  .hero{ position:relative; overflow:hidden; background:var(--navy); padding:2.4rem 0 3.4rem; }
+  .hero{ position:relative; overflow:hidden; background:var(--navy); padding:1.5rem 0 2rem; }
   .hero-mesh{ position:absolute; inset:0; overflow:hidden; z-index:0; }
   .hero-mesh .blob{ position:absolute; border-radius:50%; filter:blur(70px); opacity:.5; mix-blend-mode:screen; }
   .blob.b1{ width:420px; height:420px; background:var(--accent); top:-160px; left:-90px; animation:drift1 24s ease-in-out infinite alternate; }
@@ -56,7 +66,7 @@
   @keyframes drift2{ from{transform:translate(0,0);} to{transform:translate(-55px,55px);} }
   @keyframes drift3{ from{transform:translate(0,0);} to{transform:translate(45px,-35px);} }
   .hero-inner{ position:relative; z-index:1; max-width:1180px; margin:0 auto; padding:0 1.5rem; }
-  .hero-top{ display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; margin-bottom:1.7rem; }
+  .hero-top{ display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; margin-bottom:1rem; }
   .wordmark{ font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:1.4rem; color:#fff; letter-spacing:-0.01em; }
   .btn-login{
     background:transparent; border:1.5px solid rgba(255,255,255,.4); color:#fff;
@@ -65,11 +75,12 @@
   }
   .btn-login:hover{ border-color:#fff; background:rgba(255,255,255,.08); transform:translateY(-1px); }
   .btn-login:active{ transform:translateY(0) scale(.97); }
+  .hero-copy{ margin-left:auto; max-width:560px; text-align:right; }
   .hero-hook{
     font-family:'Space Grotesk', sans-serif; color:#fff; font-weight:700;
-    font-size:clamp(1.7rem, 4vw, 2.5rem); max-width:20ch; margin:0 0 .6rem; letter-spacing:-0.01em; line-height:1.08;
+    font-size:clamp(1.4rem, 3vw, 2.05rem); margin:0 0 .5rem; letter-spacing:-0.01em; line-height:1.12;
   }
-  .hero-sub{ color:rgba(255,255,255,.72); font-size:1rem; max-width:52ch; margin:0; line-height:1.55; }
+  .hero-sub{ color:rgba(255,255,255,.72); font-size:.92rem; margin:0 0 0 auto; line-height:1.5; max-width:48ch; }
 
   /* team-color stripe */
   .stripe{
@@ -81,18 +92,34 @@
   @keyframes stripeShift{ from{background-position:0 0;} to{background-position:200% 0;} }
 
   /* ---------- hero stats (overlap the seam) ---------- */
-  .hero-stats-wrap{ max-width:1180px; margin:-2.4rem auto 0; padding:0 1.5rem; position:relative; z-index:2; }
+  .hero-stats-wrap{ max-width:1180px; margin:-2rem auto 0; padding:0 1.5rem; position:relative; z-index:2; }
   .hero-stats{ display:flex; gap:.9rem; flex-wrap:wrap; }
   .stat-tile{
     background:var(--surface); border:1px solid var(--line); border-left:3px solid var(--accent);
     border-radius:10px; padding:.85rem 1.1rem; min-width:150px; flex:1 1 150px;
-    box-shadow:0 10px 26px rgba(14,23,48,.14);
+    box-shadow:0 10px 26px rgba(14,23,48,.14); position:relative; text-align:left;
   }
   .stat-tile .num{ font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:1.6rem; color:var(--navy); line-height:1; }
   .stat-tile .lbl{ color:var(--ink-dim); font-size:.78rem; margin-top:.3rem; }
+  .stat-tile.interactive{ cursor:pointer; animation:pulseGlow 3.2s ease-in-out infinite; }
+  @keyframes pulseGlow{
+    0%,100%{ box-shadow:0 10px 26px rgba(14,23,48,.14), 0 0 0 0 rgba(52,82,224,0); }
+    50%{ box-shadow:0 10px 26px rgba(14,23,48,.14), 0 0 0 6px rgba(52,82,224,.10); }
+  }
+  .stat-tile .chev{ display:inline-block; transition:transform .2s ease; color:var(--accent); }
+  .stat-tile[aria-expanded="true"] .chev{ transform:rotate(180deg); }
+  .teams-popover{
+    position:absolute; top:calc(100% + 8px); left:0; background:var(--surface); border:1px solid var(--line);
+    border-radius:10px; box-shadow:0 16px 34px rgba(14,23,48,.2); padding:.6rem; display:grid;
+    grid-template-columns:repeat(2, minmax(0,1fr)); gap:.3rem; min-width:260px; z-index:5;
+    opacity:0; transform:translateY(-6px); pointer-events:none; transition:opacity .18s ease, transform .18s ease;
+  }
+  .teams-popover.open{ opacity:1; transform:translateY(0); pointer-events:auto; }
+  .teams-popover .t-chip{ display:flex; align-items:center; gap:.4rem; font-size:.78rem; padding:.28rem .4rem; border-radius:6px; color:var(--ink); font-weight:600; }
+  .teams-popover .t-chip .dot{ width:8px; height:8px; border-radius:50%; flex:none; }
 
   /* ---------- page head / nav ---------- */
-  .page-head{ max-width:1180px; margin:0 auto; padding:2rem 1.5rem 0; }
+  .page-head{ max-width:1180px; margin:0 auto; padding:1.4rem 1.5rem 0; }
   nav.section-tabs{ position:relative; display:flex; gap:1.6rem; border-bottom:1px solid var(--line); }
   nav.section-tabs button{
     background:none; border:none; color:var(--ink-dim); font-size:1rem; font-weight:600;
@@ -102,7 +129,7 @@
   nav.section-tabs button.active{ color:var(--ink); }
   .tab-indicator{ position:absolute; bottom:-1px; height:3px; background:var(--accent); border-radius:2px; transition:left .25s ease, width .25s ease; }
 
-  main{ max-width:1180px; margin:0 auto; padding:1.8rem 1.5rem 5rem; }
+  main{ max-width:1180px; margin:0 auto; padding:1.6rem 1.5rem 5rem; position:relative; z-index:1; }
   .view{display:none; animation:rise .3s ease;}
   .view.active{display:block;}
   @keyframes rise{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
@@ -140,8 +167,8 @@
   }
   .btn-outline:hover{ border-color:var(--accent); box-shadow:0 4px 12px rgba(14,23,48,.08); transform:translateY(-1px); }
   .btn-outline:active{ transform:translateY(0) scale(.97); }
-  .btn-outline .ic{ display:inline-block; transition:transform .2s ease; }
-  .btn-outline:hover .ic{ transform:rotate(-12deg); }
+  .btn-outline .ic{ display:inline-block; animation:footballRoll 2.6s ease-in-out infinite; }
+  @keyframes footballRoll{ 0%,100%{ transform:rotate(0deg); } 25%{ transform:rotate(-18deg); } 75%{ transform:rotate(18deg); } }
 
   /* ---------- pick tracker grid ---------- */
   .tracker-scroll{ overflow-x:auto; border:1px solid var(--line); border-radius:12px; background:var(--surface); box-shadow:0 1px 3px rgba(14,23,48,.05); }
@@ -247,6 +274,10 @@
 </head>
 <body>
 
+<div class="page-mesh" aria-hidden="true">
+  <span class="pblob p1"></span><span class="pblob p2"></span><span class="pblob p3"></span>
+</div>
+
 <header class="hero">
   <div class="hero-mesh" aria-hidden="true">
     <span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span>
@@ -256,8 +287,10 @@
       <div class="wordmark">Riverwalk Dynasty</div>
       <button class="btn-login" id="login-open">Log in</button>
     </div>
-    <h1 class="hero-hook">Every pick. Every trade. No spreadsheet required.</h1>
-    <p class="hero-sub">The single source of truth for Riverwalk Dynasty — who's drafting when, who traded what, and who's stacked at QB again.</p>
+    <div class="hero-copy">
+      <h1 class="hero-hook">Every pick. Every trade. No spreadsheet required.</h1>
+      <p class="hero-sub">The single source of truth for Riverwalk Dynasty — who's drafting when, who traded what, and who's stacked at QB again.</p>
+    </div>
   </div>
 </header>
 <div class="stripe"></div>
@@ -509,8 +542,28 @@ function renderHeroStats(){
     { num: Object.keys(YEARS).length, lbl: 'Seasons tracked' },
   ];
   const wrap = document.getElementById('hero-stats');
-  wrap.innerHTML = stats.map((s, i) => `<div class="stat-tile"><div class="num" id="stat-${i}">0</div><div class="lbl">${s.lbl}</div></div>`).join('');
+  const teamChips = TEAMS.map(t => `<span class="t-chip"><span class="dot" style="background:var(--${t.id})"></span>${t.short}</span>`).join('');
+  wrap.innerHTML = `
+    <button type="button" class="stat-tile interactive" id="teams-stat" aria-expanded="false">
+      <div class="num" id="stat-0">0</div>
+      <div class="lbl">${stats[0].lbl} <span class="chev">▾</span></div>
+      <div class="teams-popover" id="teams-popover">${teamChips}</div>
+    </button>
+    ${stats.slice(1).map((s, i) => `<div class="stat-tile"><div class="num" id="stat-${i+1}">0</div><div class="lbl">${s.lbl}</div></div>`).join('')}
+  `;
   stats.forEach((s, i) => countUp(document.getElementById('stat-' + i), s.num));
+
+  const teamsBtn = document.getElementById('teams-stat');
+  const popover = document.getElementById('teams-popover');
+  teamsBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const open = popover.classList.toggle('open');
+    teamsBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  document.addEventListener('click', () => {
+    popover.classList.remove('open');
+    teamsBtn.setAttribute('aria-expanded', 'false');
+  });
 }
 
 /* ============================================================
