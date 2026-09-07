@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Riverwalk Dynasty — League Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#14120F;
+    --surface:#1D1A16;
+    --surface-2:#26221C;
+    --line:#3A342C;
+    --ink:#F1ECE2;
+    --ink-dim:#A79E8F;
+    --gold:#C6A15B;
+    --gold-dim:#8A754A;
+
+    --balkan:#2A5DA8;      --balkan-ink:#F1ECE2;
+    --wish:#DE9A96;        --wish-ink:#3A1614;
+    --mick:#E3B94D;        --mick-ink:#332404;
+    --valhalla:#E0A868;    --valhalla-ink:#3A2408;
+    --wilksbooth:#8FBF8A;  --wilksbooth-ink:#152D12;
+    --winter:#A9CBD6;      --winter-ink:#122A31;
+    --imps:#2E7D6B;        --imps-ink:#EAF6F2;
+    --milf:#8C63BF;        --milf-ink:#F4EEFB;
+    --thor:#C0392B;        --thor-ink:#FBEAE7;
+    --keystone:#8FB9D6;    --keystone-ink:#0E2536;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'IBM Plex Sans', sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;}
+  ::selection{background:var(--gold); color:#14120F;}
+
+  :focus-visible{
+    outline:2px solid var(--gold);
+    outline-offset:2px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important; animation:none !important;}
+  }
+
+  /* ---------- layout shell ---------- */
+  header.masthead{
+    padding:2.4rem 1.5rem 0;
+    max-width:1180px;
+    margin:0 auto;
+  }
+  .lockup{
+    display:flex;
+    align-items:baseline;
+    gap:.6rem;
+    flex-wrap:wrap;
+  }
+  .lockup h1{
+    font-family:'Anton', sans-serif;
+    font-weight:400;
+    letter-spacing:.01em;
+    font-size:clamp(2rem, 5vw, 3.1rem);
+    margin:0;
+    line-height:.95;
+  }
+  .lockup .season{
+    font-family:'IBM Plex Mono', monospace;
+    color:var(--gold);
+    font-size:1.1rem;
+    letter-spacing:.04em;
+  }
+  .tagline{
+    color:var(--ink-dim);
+    margin:.5rem 0 0;
+    max-width:46ch;
+    font-size:.98rem;
+  }
+
+  nav.section-tabs{
+    display:flex;
+    gap:1.6rem;
+    margin:2rem 0 0;
+    border-bottom:1px solid var(--line);
+  }
+  nav.section-tabs button{
+    background:none;
+    border:none;
+    color:var(--ink-dim);
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size:1rem;
+    font-weight:600;
+    padding:.9rem .1rem 1rem;
+    cursor:pointer;
+    border-bottom:3px solid transparent;
+    margin-bottom:-1px;
+  }
+  nav.section-tabs button:hover{color:var(--ink);}
+  nav.section-tabs button.active{
+    color:var(--ink);
+    border-bottom-color:var(--gold);
+  }
+
+  main{
+    max-width:1180px;
+    margin:0 auto;
+    padding:2rem 1.5rem 5rem;
+  }
+  .view{display:none; animation:rise .35s ease;}
+  .view.active{display:block;}
+  @keyframes rise{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
+
+  /* ---------- year strip (pick tracker only) ---------- */
+  .year-strip{
+    display:flex;
+    gap:.5rem;
+    flex-wrap:wrap;
+    margin-bottom:1.6rem;
+  }
+  .year-strip button{
+    font-family:'IBM Plex Mono', monospace;
+    background:var(--surface);
+    border:1px solid var(--line);
+    color:var(--ink-dim);
+    padding:.45rem .9rem;
+    border-radius:3px;
+    cursor:pointer;
+    font-size:.9rem;
+  }
+  .year-strip button.active{
+    color:#14120F;
+    background:var(--gold);
+    border-color:var(--gold);
+    font-weight:600;
+  }
+  .year-strip button[data-empty="1"]{opacity:.55;}
+
+  .section-heading{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:1rem;
+    flex-wrap:wrap;
+    margin-bottom:1rem;
+  }
+  .section-heading h2{
+    font-family:'Anton', sans-serif;
+    font-weight:400;
+    font-size:1.5rem;
+    margin:0;
+  }
+  .section-heading p{
+    color:var(--ink-dim);
+    font-size:.9rem;
+    margin:0;
+  }
+
+  /* ---------- pick tracker grid ---------- */
+  .tracker-scroll{
+    overflow-x:auto;
+    border:1px solid var(--line);
+    border-radius:6px;
+    background:var(--surface);
+  }
+  table.tracker{
+    border-collapse:collapse;
+    width:100%;
+    min-width:1080px;
+  }
+  table.tracker th, table.tracker td{
+    padding:.55rem .6rem;
+    text-align:left;
+    vertical-align:top;
+    border-bottom:1px solid var(--line);
+  }
+  table.tracker thead th{
+    position:sticky;
+    top:0;
+    background:var(--surface-2);
+    font-size:.78rem;
+    font-weight:600;
+    color:var(--ink-dim);
+    z-index:2;
+    border-bottom:1px solid var(--line);
+  }
+  table.tracker thead th:first-child{left:0; z-index:3;}
+  table.tracker td:first-child, table.tracker th:first-child{
+    position:sticky;
+    left:0;
+    background:var(--surface-2);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:.85rem;
+    color:var(--ink);
+    white-space:nowrap;
+  }
+  table.tracker tbody tr:last-child td{border-bottom:none;}
+
+  .pip-stack{display:flex; flex-direction:column; gap:.3rem;}
+  .pip{
+    display:inline-block;
+    padding:.22rem .55rem;
+    border-radius:999px;
+    font-size:.76rem;
+    font-weight:600;
+    white-space:nowrap;
+  }
+  .pip.own{opacity:.55;}
+  .pip.acquired{box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.35);}
+  .empty-cell{color:var(--line); font-size:.8rem;}
+
+  .legend{
+    margin-top:1rem;
+    font-size:.82rem;
+    color:var(--ink-dim);
+  }
+  .legend .pip{margin-right:.3rem;}
+
+  /* ---------- rosters ---------- */
+  .roster-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));
+    gap:1rem;
+  }
+  .roster-card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:6px;
+    overflow:hidden;
+  }
+  .roster-card .bar{height:5px;}
+  .roster-card .head{
+    padding:1rem 1.1rem .8rem;
+    border-bottom:1px solid var(--line);
+  }
+  .roster-card .head h3{
+    margin:0 0 .15rem;
+    font-size:1.05rem;
+    font-family:'IBM Plex Sans', sans-serif;
+    font-weight:700;
+  }
+  .roster-card .head .owner{
+    color:var(--ink-dim);
+    font-size:.82rem;
+  }
+  .roster-card table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:.85rem;
+  }
+  .roster-card td{
+    padding:.45rem 1.1rem;
+    border-bottom:1px solid var(--line);
+  }
+  .roster-card tr:last-child td{border-bottom:none;}
+  .slot{
+    color:var(--ink-dim);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:.72rem;
+    width:3.4rem;
+  }
+  .player{font-weight:600;}
+  .nfl{color:var(--ink-dim); font-size:.78rem;}
+  .roster-card .foot{
+    padding:.7rem 1.1rem .9rem;
+    font-size:.76rem;
+    color:var(--ink-dim);
+    border-top:1px solid var(--line);
+  }
+
+  /* ---------- trade log ---------- */
+  .trade-year-block{margin-bottom:1.8rem;}
+  .trade-year-block h3{
+    font-family:'IBM Plex Mono', monospace;
+    font-weight:500;
+    color:var(--gold);
+    font-size:1rem;
+    margin:0 0 .6rem;
+  }
+  .trade-row{
+    display:flex;
+    align-items:center;
+    gap:.7rem;
+    padding:.6rem 0;
+    border-bottom:1px solid var(--line);
+    flex-wrap:wrap;
+    font-size:.92rem;
+  }
+  .trade-row:last-child{border-bottom:none;}
+  .trade-round{
+    font-family:'IBM Plex Mono', monospace;
+    color:var(--ink-dim);
+    font-size:.78rem;
+    width:4.5rem;
+  }
+  .arrow{color:var(--ink-dim);}
+  .empty-note{
+    color:var(--ink-dim);
+    font-size:.9rem;
+    padding:1.2rem 0;
+  }
+
+  .admin-note{
+    margin-top:2rem;
+    padding:1rem 1.1rem;
+    border:1px dashed var(--line);
+    border-radius:6px;
+    color:var(--ink-dim);
+    font-size:.85rem;
+  }
+
+  footer{
+    max-width:1180px;
+    margin:0 auto;
+    padding:0 1.5rem 3rem;
+    color:var(--ink-dim);
+    font-size:.8rem;
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="lockup">
+    <h1>Riverwalk Dynasty</h1>
+    <span class="season">League Hub</span>
+  </div>
+  <p class="tagline">Who owns which pick, who's on which roster, and what's been traded to get here — all in one place instead of a shared sheet.</p>
+
+  <nav class="section-tabs">
+    <button data-view="tracker" class="active">Pick Tracker</button>
+    <button data-view="rosters">Rosters</button>
+    <button data-view="trades">Trade Log</button>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ===================== PICK TRACKER ===================== -->
+  <section id="view-tracker" class="view active">
+    <div class="year-strip" id="year-strip"></div>
+
+    <div class="section-heading">
+      <h2 id="tracker-heading">Draft Picks</h2>
+      <p id="tracker-sub"></p>
+    </div>
+
+    <div class="tracker-scroll">
+      <table class="tracker">
+        <thead><tr id="tracker-head"></tr></thead>
+        <tbody id="tracker-body"></tbody>
+      </table>
+    </div>
+
+    <p class="legend">Solid pill = the team's own original pick for that round. Outlined pill = a pick acquired in a trade, labeled with who it came from.</p>
+  </section>
+
+  <!-- ===================== ROSTERS ===================== -->
+  <section id="view-rosters" class="view">
+    <div class="section-heading">
+      <h2>Rosters</h2>
+      <p>2026 starting lineups</p>
+    </div>
+    <div class="roster-grid" id="roster-grid"></div>
+    <div class="admin-note">Showing each team's 8 starters for now. Full 40-man rosters (bench + IR) will populate here automatically once the ESPN sync is wired up — no more re-typing screenshots.</div>
+  </section>
+
+  <!-- ===================== TRADE LOG ===================== -->
+  <section id="view-trades" class="view">
+    <div class="section-heading">
+      <h2>Trade Log</h2>
+      <p>Every pick trade on record, most recent season first</p>
+    </div>
+    <div id="trade-log"></div>
+    <div class="admin-note">This log is built straight from the pick tracker above. Once trades start happening in-season, they'll get logged here with a date and both sides of the deal.</div>
+  </section>
+
+</main>
+
+<footer>Riverwalk Dynasty 2026 · Built for the league, not for a spreadsheet.</footer>
+
+<script>
+/* ============================================================
+   DATA
+   Franchise slot names below match the league's pick-trade
+   ledger. Current-season ESPN team names (used in Rosters)
+   don't all map 1:1 to these slot names yet — confirm the
+   owner↔slot pairing to merge the two views later.
+   ============================================================ */
+
+const TEAMS = [
+  { id:'balkan',     name:'Balkan Bastard',        short:'Balkan'    },
+  { id:'wish',       name:'Wishbone Productions',  short:'Wish'      },
+  { id:'mick',       name:"Mick's Dynasty",        short:'Mick'      },
+  { id:'valhalla',   name:'Victory or Valhalla',   short:'Valhalla'  },
+  { id:'wilksbooth', name:'Wilksbooth',            short:'Wilksbooth'},
+  { id:'winter',     name:'Winter Something',      short:'Winter'    },
+  { id:'imps',       name:'Imps',                  short:'Imps'      },
+  { id:'milf',       name:'MILF',                  short:'MILF'      },
+  { id:'thor',       name:'Thor',                  short:'Thor'      },
+  { id:'keystone',   name:'Keystone',              short:'Keystone'  },
+];
+
+const ROUNDS = [1,2,3,4,5];
+
+// overrides: a team's own pick for {round} moves to another team.
+const YEARS = {
+  2025: { label:'2025', status:'Past', overrides:[
+    { round:1, from:'mick', to:'keystone' },
+    { round:2, from:'wilksbooth', to:'mick' },
+    { round:2, from:'mick', to:'milf' },
+  ]},
+  2026: { label:'2026', status:'Current', overrides:[
+    { round:1, from:'mick', to:'keystone' },
+    { round:2, from:'balkan', to:'mick' },
+    { round:2, from:'milf', to:'mick' },
+    { round:2, from:'thor', to:'mick' },
+    { round:2, from:'keystone', to:'mick' },
+    { round:2, from:'wilksbooth', to:'mick' },
+    { round:3, from:'mick', to:'wilksbooth' },
+    { round:3, from:'balkan', to:'mick' },
+    { round:3, from:'keystone', to:'imps' },
+  ]},
+  2027: { label:'2027', status:'Future', overrides:[] },
+  2028: { label:'2028', status:'Future', overrides:[] },
+  2029: { label:'2029', status:'Future', overrides:[] },
+  2030: { label:'2030', status:'Future', overrides:[] },
+};
+
+const ROSTERS = [
+  { id:'taxi',     name:"Geoff's Taxi Squad",           owner:'Jason Keizer',   slotColor:'balkan',
+    starters:[['QB','Kirk Cousins','LV'],['RB','Isiah Pacheco','DET'],['RB','Kareem Hunt','FA'],
+      ['WR/TE','Troy Franklin','DEN'],['WR/TE','A.J. Brown','NE'],['WR/TE','Khalil Shakir','BUF'],
+      ['FLEX','Devin Singletary','NYG'],['OP','Jaxson Dart','NYG']] },
+  { id:'scary',    name:"Justin's Scary Team",           owner:'Justin Puopolo', slotColor:'wish',
+    starters:[['QB','Dak Prescott','DAL'],['RB','Aaron Jones Sr.','MIN'],['RB','Derrick Henry','BAL'],
+      ['WR/TE','Tee Higgins','CIN'],['WR/TE','Ladd McConkey','LAC'],['WR/TE','Terry McLaurin','WSH'],
+      ['FLEX','Justin Jefferson','MIN'],['OP','Deebo Samuel Sr.','SF']] },
+  { id:'wilks',    name:'Wilksbooth',                    owner:'Tyler Wilkins',  slotColor:'wilksbooth',
+    starters:[['QB','Matthew Stafford','LAR'],['RB','Kenneth Walker III','KC'],['RB','J.K. Dobbins','DEN'],
+      ['WR/TE','Nico Collins','HOU'],['WR/TE','Zay Flowers','BAL'],['WR/TE','Emeka Egbuka','TB'],
+      ['FLEX','DeVonta Smith','PHI'],['OP','Joe Burrow','CIN']] },
+  { id:'wishbone', name:'Wishbone Productions',          owner:'Matt Matiko',    slotColor:'wish',
+    starters:[['QB','Josh Allen','BUF'],['RB','Saquon Barkley','PHI'],['RB','Chase Brown','CIN'],
+      ['WR/TE','Stefon Diggs','WSH'],['WR/TE','CeeDee Lamb','DAL'],['WR/TE','Theo Johnson','NYG'],
+      ['FLEX',"Ja'Marr Chase",'CIN'],['OP','Marcus Mariota','WSH']] },
+  { id:'bjorn',    name:"Bjorn's Brilliant Team",        owner:'Bjorn Gunnarsson', slotColor:'milf',
+    starters:[['QB','Drake Maye','NE'],['RB','Kyren Williams','LAR'],['RB','Jahmyr Gibbs','DET'],
+      ['WR/TE','Rashee Rice','KC'],['WR/TE','DK Metcalf','PIT'],['WR/TE','Colston Loveland','CHI'],
+      ['FLEX','Javonte Williams','DAL'],['OP','Tyler Shough','NO']] },
+  { id:'glock',    name:'Glock Purdy to Pearsall',       owner:'Mark Trenkle',   slotColor:'thor',
+    starters:[['QB','Brock Purdy','SF'],['RB','Travis Etienne Jr.','JAX'],['RB','Ashton Jeanty','LV'],
+      ['WR/TE','Taysom Hill','FA'],['WR/TE','George Pickens','DAL'],['WR/TE','Harold Fannin Jr.','CLE'],
+      ['FLEX','Bijan Robinson','ATL'],['OP','Caleb Williams','CHI']] },
+  { id:'valhalla', name:'Victory or Valhalla',           owner:'laurence hunt',  slotColor:'valhalla',
+    starters:[['QB','Sam Darnold','SEA'],['RB','Josh Jacobs','GB'],['RB','Bhayshul Tuten','JAX'],
+      ['WR/TE','Puka Nacua','LAR'],['WR/TE','Malik Nabers','NYG'],['WR/TE','Brian Thomas Jr.','JAX'],
+      ['FLEX','Quinshon Judkins','CLE'],['OP','Jared Goff','DET']] },
+  { id:'sungod',   name:'The Sun God and His Buttholes', owner:'Brad Jones',     slotColor:'winter',
+    starters:[['QB','Malik Willis','MIA'],['RB','James Cook III','BUF'],['RB',"D'Andre Swift",'CHI'],
+      ['WR/TE','DJ Moore','CHI'],['WR/TE','Jameson Williams','DET'],['WR/TE','Amon-Ra St. Brown','DET'],
+      ['FLEX','RJ Harvey','DEN'],['OP','Philip Rivers','IND']] },
+  { id:'mick',     name:'Won One for The Mick',          owner:'Geoff Trenkle',  slotColor:'mick',
+    starters:[['QB','Justin Herbert','LAC'],['RB','Christian McCaffrey','SF'],['RB','Bucky Irving','TB'],
+      ['WR/TE','Jaylen Waddle','DEN'],['WR/TE','Tetairoa McMillan','CAR'],['WR/TE','Drake London','ATL'],
+      ['FLEX','Breece Hall','NYJ'],['OP','Lamar Jackson','BAL']] },
+  { id:'balkan',   name:'The Balkan',                    owner:'Kristofer Auer', slotColor:'keystone',
+    starters:[['QB','Jalen Hurts','PHI'],['RB',"De'Von Achane",'MIA'],['RB','Jonathan Taylor','IND'],
+      ['WR/TE','Jaxon Smith-Njigba','SEA'],['WR/TE','Trey McBride','ARI'],['WR/TE','Chris Olave','NO'],
+      ['FLEX','Omarion Hampton','LAC'],['OP','Kyler Murray','MIN']] },
+];
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+const teamById = id => TEAMS.find(t => t.id === id);
+
+function buildRoundData(overrides){
+  // returns { [round]: { [teamId]: [pip,...] } }
+  const data = {};
+  ROUNDS.forEach(r => {
+    data[r] = {};
+    TEAMS.forEach(t => data[r][t.id] = []);
+  });
+  const removedOwn = new Set(); // "round-team" pairs whose own pick moved away
+  overrides.forEach(o => removedOwn.add(o.round + '-' + o.from));
+
+  ROUNDS.forEach(r => {
+    TEAMS.forEach(t => {
+      if(!removedOwn.has(r + '-' + t.id)){
+        data[r][t.id].push({ label:t.short, color:t.id, kind:'own' });
+      }
+    });
+  });
+  overrides.forEach(o => {
+    data[o.round][o.to].push({ label: teamById(o.from).short, color:o.from, kind:'acquired' });
+  });
+  return data;
+}
+
+/* ============================================================
+   RENDER: PICK TRACKER
+   ============================================================ */
+let currentYear = 2026;
+
+function renderYearStrip(){
+  const strip = document.getElementById('year-strip');
+  strip.innerHTML = '';
+  Object.keys(YEARS).forEach(y => {
+    const btn = document.createElement('button');
+    btn.textContent = y;
+    if(YEARS[y].overrides.length === 0) btn.dataset.empty = '1';
+    if(Number(y) === currentYear) btn.classList.add('active');
+    btn.addEventListener('click', () => { currentYear = Number(y); renderYearStrip(); renderTracker(); });
+    strip.appendChild(btn);
+  });
+}
+
+function renderTracker(){
+  const year = YEARS[currentYear];
+  document.getElementById('tracker-heading').textContent = currentYear + ' Draft — ' + year.status;
+  document.getElementById('tracker-sub').textContent =
+    year.overrides.length ? year.overrides.length + ' trades on record for this class' : 'No trades yet — every team holds its own picks';
+
+  const head = document.getElementById('tracker-head');
+  head.innerHTML = '<th>Round</th>' + TEAMS.map(t =>
+    `<th style="color:var(--${t.id})">${t.short}</th>`
+  ).join('');
+
+  const data = buildRoundData(year.overrides);
+  const body = document.getElementById('tracker-body');
+  body.innerHTML = ROUNDS.map(r => {
+    const cells = TEAMS.map(t => {
+      const pips = data[r][t.id];
+      if(!pips.length) return '<td><span class="empty-cell">—</span></td>';
+      const inner = pips.map(p =>
+        `<span class="pip ${p.kind}" style="background:var(--${p.color});color:var(--${p.color}-ink)">${p.label}</span>`
+      ).join('');
+      return `<td><div class="pip-stack">${inner}</div></td>`;
+    }).join('');
+    return `<tr><td>Round ${r}</td>${cells}</tr>`;
+  }).join('');
+}
+
+/* ============================================================
+   RENDER: ROSTERS
+   ============================================================ */
+function renderRosters(){
+  const grid = document.getElementById('roster-grid');
+  grid.innerHTML = ROSTERS.map(team => `
+    <div class="roster-card">
+      <div class="bar" style="background:var(--${team.slotColor})"></div>
+      <div class="head">
+        <h3>${team.name}</h3>
+        <div class="owner">${team.owner}</div>
+      </div>
+      <table>
+        ${team.starters.map(([slot, player, nfl]) => `
+          <tr>
+            <td class="slot">${slot}</td>
+            <td class="player">${player}</td>
+            <td class="nfl">${nfl}</td>
+          </tr>`).join('')}
+      </table>
+      <div class="foot">Bench &amp; IR sync pending</div>
+    </div>
+  `).join('');
+}
+
+/* ============================================================
+   RENDER: TRADE LOG
+   ============================================================ */
+function renderTrades(){
+  const wrap = document.getElementById('trade-log');
+  const years = Object.keys(YEARS).map(Number).sort((a,b) => b - a);
+  wrap.innerHTML = years.map(y => {
+    const overrides = YEARS[y].overrides;
+    const rows = overrides.length
+      ? overrides.map(o => `
+          <div class="trade-row">
+            <span class="trade-round">Round ${o.round}</span>
+            <span class="pip own" style="background:var(--${o.from});color:var(--${o.from}-ink)">${teamById(o.from).short}</span>
+            <span class="arrow">pick →</span>
+            <span class="pip acquired" style="background:var(--${o.to});color:var(--${o.to}-ink)">${teamById(o.to).short}</span>
+          </div>`).join('')
+      : `<div class="empty-note">No trades recorded for ${y}.</div>`;
+    return `<div class="trade-year-block"><h3>${y}</h3>${rows}</div>`;
+  }).join('');
+}
+
+/* ============================================================
+   NAV
+   ============================================================ */
+document.querySelectorAll('.section-tabs button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.section-tabs button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById('view-' + btn.dataset.view).classList.add('active');
+  });
+});
+
+renderYearStrip();
+renderTracker();
+renderRosters();
+renderTrades();
+</script>
+
+</body>
+</html>
